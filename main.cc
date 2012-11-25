@@ -71,6 +71,13 @@ int main(int argc, char** argv)
       console::out() << "Pdf document successfully loaded!" << std::endl;
     }
 
+    PopplerPage* page = poppler_document_get_page(pdfDocument, 0);
+    if ( page == NULL ) {
+      console::out() << "Error loading page!" << std::endl;
+    } else {
+      console::out() << "Page successfully loaded!" << std::endl;
+    }
+
     // gtk_main();    
 }
 

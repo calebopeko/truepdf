@@ -78,6 +78,10 @@ int main(int argc, char** argv)
       console::out() << "Page successfully loaded!" << std::endl;
     }
 
+    gdouble pageWidth, pageHeight;
+    poppler_page_get_size(page, &pageWidth, &pageHeight);
+    console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
+
     // gtk_main();    
 }
 

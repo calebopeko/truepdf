@@ -73,7 +73,7 @@ int main(int argc, char** argv)
   console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
   int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
-  unsigned char* data = new unsigned char[stride*((int)pageHeight)*24];
+  unsigned char* data = new unsigned char[stride*((int)pageHeight)*4];
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
   cairo_t* context = cairo_create(surface);
   cairo_save(context);
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
   cairo_restore(context);
   cairo_save(context);
 
-  // cairo_scale(context, 1.0, 1.0);
+  // cairo_scale(context, 10.0, 10.0);
   poppler_page_render(page, context);
 
   cairo_destroy(context);
@@ -91,9 +91,21 @@ int main(int argc, char** argv)
 
 
   // SDL stuff
-  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 32, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  int bpp = screen->format->BytesPerPixel;
+
+  for ( int iy=0; iy<pageWidth; iy++ ) {
+    for ( int ix=0; ix<pageWidth; ix++ ) {
+      Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
+      for ( int b = 0; b<3; b++ ) {
+	p[b] = data[(ix+iy*stride)*4+b];
+      }
+    }
+  }
+
   while ( poll() ) {
     SDL_Delay(10);
+    SDL_Flip(screen);
   }
   
   delete[] data;

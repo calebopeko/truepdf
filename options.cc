@@ -9,7 +9,7 @@ void Options::init()
 {
   addParam("width", "100", "Set window width.", 'w');
   addParam("page", "1", "Set the page to display.", 'p');
-  addParam("file", "test.pdf", "Set the document to load.", 'f');
+  addParam("file", "", "Set the document to load.", 'f');
 }
 
 void Options::addParam(const std::string& name, const std::string& initial, const std::string& description, char abbrev)

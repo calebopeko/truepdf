@@ -38,6 +38,8 @@ bool poll()
 
 int main(int argc, char** argv)
 {
+  const double zoom = 5.0;
+
   Options options(argc, argv);
 
   // GTK Stuff
@@ -72,19 +74,19 @@ int main(int argc, char** argv)
   poppler_page_get_size(page, &pageWidth, &pageHeight);
   console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
-  int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
+  int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth*zoom);
   console::out() << "Stride set to " << stride << std::endl;
-  unsigned char* data = new unsigned char[stride*((int)pageHeight)*4];
-  cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
+  unsigned char* data = new unsigned char[stride*((int)(pageHeight*zoom))*4];
+  cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth*zoom, pageHeight*zoom, stride);
   cairo_t* context = cairo_create(surface);
   cairo_save(context);
   cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
-  cairo_rectangle(context, 0, 0, pageWidth, pageHeight);
+  cairo_rectangle(context, 0, 0, pageWidth*zoom, pageHeight*zoom);
   cairo_fill(context);
   cairo_restore(context);
   cairo_save(context);
 
-  // cairo_scale(context, 10.0, 10.0);
+  cairo_scale(context, zoom, zoom);
   poppler_page_render(page, context);
 
   cairo_destroy(context);
@@ -92,11 +94,11 @@ int main(int argc, char** argv)
 
 
   // SDL stuff
-  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
   int bpp = screen->format->BytesPerPixel;
 
-  for ( int iy=0; iy<pageWidth; iy++ ) {
-    for ( int ix=0; ix<pageWidth; ix++ ) {
+  for ( int iy=0; iy<pageWidth*zoom; iy++ ) {
+    for ( int ix=0; ix<pageWidth*zoom; ix++ ) {
       Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
       Uint8 *d = (Uint8 *)data + iy*stride + ix*4;
       for ( int b = 0; b<3; b++ ) {

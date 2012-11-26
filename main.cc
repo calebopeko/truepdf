@@ -5,11 +5,6 @@
 #include <poppler.h>
 #include <SDL/SDL.h>
 
-void callback_main_window_quit(GtkWidget *widget, gpointer data)
-{
-    gtk_main_quit ();
-}
-
 gchar* getAbsoluteFileName (const gchar *fileName)
 {
   gchar *absoluteFileName = NULL;

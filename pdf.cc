@@ -56,8 +56,6 @@ void Page::render(int tW)
   cairo_surface_destroy(cairo_surface);
 
   rendered = true;
-
-  console::out() << "Rendered page of " << width << "x" << height << std::endl;
 }
 
 Page::~Page()
@@ -108,10 +106,13 @@ void Document::open(const std::string& filename)
 
 void Document::render(int tW)
 {
+  console::out() << "Pre-rendering all pages..." << std::endl;
   targetWidth = tW;
   for ( int i=0; i<pageCount; ++i ) {
     pages[i].render(targetWidth);
+    console::out() << i+1 << "/" << pageCount << std::endl;
   }
+  console::out() << "Done." << std::endl;
 }
 
 Document::~Document()

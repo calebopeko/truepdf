@@ -1,5 +1,6 @@
 #include "event.h"
 #include "presenter.h"
+#include "console.h"
 
 Event Event::instance_;
 
@@ -8,6 +9,10 @@ void Event::init(int fpsc)
   // hardcoded standard keymapping
   keyMap[SDLK_UP] = KeyDef(Key_ScrollUp, true);
   keyMap[SDLK_DOWN] = KeyDef(Key_ScrollDown, true);
+  keyMap[SDLK_PAGEUP] = KeyDef(Key_PageUp, false);
+  keyMap[SDLK_PAGEDOWN] = KeyDef(Key_PageDown, false);
+  keyMap[SDLK_HOME] = KeyDef(Key_Home, false);
+  keyMap[SDLK_END] = KeyDef(Key_End, false);
   keyMap[SDLK_ESCAPE] = KeyDef(Key_Quit, false);
 
   // array for pressed keys
@@ -89,6 +94,21 @@ void Event::keyDown(SDL_Event& ev)
 void Event::keySingle(KeyIndex key)
 {
   switch (key) {
+  case Key_PageDown:
+    Presenter::instance().position += Presenter::instance().height;
+    Presenter::instance().render();
+    break;
+  case Key_PageUp:
+    Presenter::instance().position -= Presenter::instance().height;
+    Presenter::instance().render();
+    break;
+  case Key_Home:
+    Presenter::instance().position = 0;
+    Presenter::instance().render();
+    break;
+  case Key_End:
+    console::out() << "Not yet implemented!" << std::endl;
+    break;
   case Key_Quit:
     running = false;
     break;
@@ -125,6 +145,11 @@ bool Event::poll()
       break;
     case SDL_MOUSEMOTION:
       mouseMove(ev.button.x, ev.button.y);
+      break;
+    case SDL_VIDEORESIZE:
+      {
+	// iVec size(ev.resize.w, ev.resize.h);
+      }
       break;
     case SDL_QUIT:
       return false;

@@ -1,6 +1,7 @@
 #include "presenter.h"
 #include "console.h"
 
+#include <cmath>
 #include <SDL/SDL.h>
 
 Presenter::Presenter(int w, int h, const std::string& filename)
@@ -43,15 +44,30 @@ bool Presenter::poll()
 
 void Presenter::render()
 {
-  position = 800;
-  const double pageHeight = document[0].height; // TODO: multiple heights per page!
+  position = 500;
+  const double pageHeight = document[0].height; // TODO: multiple heights per document!
   const int currentPage = position/pageHeight;
   const int offset = position-currentPage*pageHeight;
   SDL_Surface* src = document[currentPage].getSurface();
-  SDL_Rect s, d;
-  s.x = 0; s.y = offset; s.w = src->w; s.h = src->h;
-  d.x = 0; d.y = 0;
-  SDL_BlitSurface(src, &s, screen, &d);
+  SDL_Rect s;
+  s.x = 0; s.y = offset; s.w = src->w; s.h = std::min(src->h - offset, height);
+  SDL_BlitSurface(src, &s, screen, NULL);
+
+  int renderPos = std::min(src->h - offset, height);
+  int pageOffset = 1;
+  while ( renderPos < height ) { // TODO: Check for end of page list
+    SDL_Surface* next = document[currentPage+pageOffset].getSurface();
+    SDL_Rect nextRec, nextDest;
+    nextRec.x = 0; nextRec.y = 0; nextRec.w = next->w; nextRec.h = std::min(height - renderPos, next->h);
+    nextDest.x = 0; nextDest.y = renderPos;
+    SDL_BlitSurface(next, &nextRec, screen, &nextDest);
+    renderPos += next->h;
+    pageOffset++;
+  }
+  if ( pageHeight - offset < height ) {
+    
+  }
+
   SDL_Flip(screen);
 }
 

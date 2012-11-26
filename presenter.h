@@ -21,6 +21,8 @@ public:
   void run();
 
   void render();
+
+  void resize(int w);
   
   double position;
 

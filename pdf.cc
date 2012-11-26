@@ -25,6 +25,10 @@ void Page::render(int tW)
 {
   targetWidth = tW;
 
+  if ( rendered && surface ) {
+    SDL_FreeSurface(surface);
+  }
+
   Uint32 rmask, gmask, bmask, amask;
 
   // somehow derive these

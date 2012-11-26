@@ -25,6 +25,13 @@ void Presenter::init(int w, int h, const std::string& file)
   }
 
   document.open(filename);
+  resize(w);
+}
+
+void Presenter::resize(int w)
+{
+  position *= ((double)w)/width;
+  width = w;
   document.render(width);
 }
 

@@ -24,6 +24,7 @@ void Presenter::reopen()
 {
   document.open(filename);
   document.render(width);
+  render();
 }
 
 void Presenter::resize(int w, int h)

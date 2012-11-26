@@ -55,6 +55,8 @@ int main(int argc, char** argv)
   g_free(filename_uri);
 
   PopplerDocument *pdfDocument = poppler_document_new_from_file(file.c_str(), NULL, NULL);
+  int pageCount = poppler_document_get_n_pages(pdfDocument);
+  console::out() << "There " << (pageCount>1?"are ":"is ") << pageCount << " page" << (pageCount>1?"s":"") << " in this document" << std::endl;
   PopplerPage* page = poppler_document_get_page(pdfDocument, pageNumber-1);
 
   double pageWidth, pageHeight;

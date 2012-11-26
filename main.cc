@@ -92,7 +92,7 @@ int main(int argc, char** argv)
   console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
   int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
-  unsigned char* data = new unsigned char[stride*((int)pageHeight)];
+  unsigned char* data = new unsigned char[stride*((int)pageHeight)*24];
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
   cairo_t* context = cairo_create(surface);
   cairo_save(context);
@@ -102,9 +102,14 @@ int main(int argc, char** argv)
   cairo_restore(context);
   cairo_save(context);
 
+  // cairo_scale(context, 1.0, 1.0);
+
   poppler_page_render(page, context);
 
   cairo_destroy(context);
   cairo_surface_destroy(surface);
+
+
+  delete[] data;
 }
 

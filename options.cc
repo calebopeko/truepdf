@@ -7,7 +7,7 @@
 
 void Options::init()
 {
-  addParam("zoom", "1.0", "Set the zoom.", 'z');
+  addParam("width", "100", "Set window width.", 'w');
   addParam("page", "1", "Set the page to display.", 'p');
   addParam("file", "test.pdf", "Set the document to load.", 'f');
 }

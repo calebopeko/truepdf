@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
-  const double zoom = options["zoom"];
+  const int w = options["width"];
   const int pageNumber = options["page"];
   std::string filename = options["file"];
 
@@ -59,6 +59,8 @@ int main(int argc, char** argv)
 
   double pageWidth, pageHeight;
   poppler_page_get_size(page, &pageWidth, &pageHeight);
+
+  const double zoom = w/pageWidth;
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 32, SDL_SWSURFACE );

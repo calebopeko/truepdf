@@ -32,7 +32,7 @@ void Presenter::render()
 {
   SDL_FillRect(screen, NULL, 0);
 
-  const double pageHeight = document[0].height; // TODO: multiple heights per document!
+  const double pageHeight = document[0].getSurface()->h; // TODO: multiple heights per document!
   const int currentPage = position/pageHeight;
   const int offset = position-currentPage*pageHeight;
   SDL_Surface* src = document[currentPage].getSurface();

@@ -22,6 +22,8 @@ public:
 
   void render();
 
+  void reopen();
+
   void resize(int w, int h);
   
   double getPosition() { return position; }

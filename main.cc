@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 
   if ( (std::string) options["file"] == "" ) {
     options.printUsage();
-    return 0;
+    return -1;
   }
 
   gtk_init (&argc, &argv);

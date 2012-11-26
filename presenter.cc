@@ -20,6 +20,12 @@ void Presenter::init(int w, int h, const std::string& file)
   resize(w,h);
 }
 
+void Presenter::reopen()
+{
+  document.open(filename);
+  document.render(width);
+}
+
 void Presenter::resize(int w, int h)
 {
   width = w;

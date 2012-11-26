@@ -13,6 +13,7 @@ void Event::init(int fpsc)
   keyMap[SDLK_PAGEDOWN] = KeyDef(Key_PageDown, false);
   keyMap[SDLK_HOME] = KeyDef(Key_Home, false);
   keyMap[SDLK_END] = KeyDef(Key_End, false);
+  keyMap[SDLK_r] = KeyDef(Key_Reopen, false);
   keyMap[SDLK_ESCAPE] = KeyDef(Key_Quit, false);
 
   // array for pressed keys
@@ -108,6 +109,9 @@ void Event::keySingle(KeyIndex key)
     break;
   case Key_End:
     console::out() << "Not yet implemented!" << std::endl;
+    break;
+  case Key_Reopen:
+    Presenter::instance().reopen();
     break;
   case Key_Quit:
     running = false;

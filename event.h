@@ -16,7 +16,8 @@ class Event
     Key_PageDown,
     Key_Home,
     Key_End,
-
+    Key_Reopen,
+    
     Key_Quit,
     Key_Total // <- last
   };

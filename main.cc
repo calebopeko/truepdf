@@ -38,7 +38,7 @@ bool poll()
 
 int main(int argc, char** argv)
 {
-  const double zoom = 5.0;
+  const double zoom = 1.0;
 
   Options options(argc, argv);
 
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
     console::out() << "Pdf document successfully loaded!" << std::endl;
   }
 
-  PopplerPage* page = poppler_document_get_page(pdfDocument, 0);
+  PopplerPage* page = poppler_document_get_page(pdfDocument, 3);
   if ( page == NULL ) {
     console::out() << "Error loading page!" << std::endl;
   } else {
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
   SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
   int bpp = screen->format->BytesPerPixel;
 
-  for ( int iy=0; iy<pageWidth*zoom; iy++ ) {
+  for ( int iy=0; iy<pageHeight*zoom; iy++ ) {
     for ( int ix=0; ix<pageWidth*zoom; ix++ ) {
       Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
       Uint8 *d = (Uint8 *)data + iy*stride + ix*4;

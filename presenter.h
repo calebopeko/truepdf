@@ -9,7 +9,7 @@ class Presenter
 public:
 
   Presenter()
-    : width(0), height(0), document(), screen(NULL) {}
+    : width(0), height(0), document(), screen(NULL), position(0) {}
 
   Presenter(int width, int height, const std::string& filename);
 
@@ -30,6 +30,8 @@ private:
   Document document;
 
   SDL_Surface* screen;
+
+  double position;
 };
 
 #endif

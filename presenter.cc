@@ -43,11 +43,15 @@ bool Presenter::poll()
 
 void Presenter::render()
 {
-  const int i=0;
-  SDL_Surface* src = document[i].getSurface();
-  SDL_Rect s;
-  s.x = 0; s.y = 0; s.w = src->w; s.h = src->h;
-  SDL_BlitSurface(src, &s, screen, NULL);
+  position = 800;
+  const double pageHeight = document[0].height; // TODO: multiple heights per page!
+  const int currentPage = position/pageHeight;
+  const int offset = position-currentPage*pageHeight;
+  SDL_Surface* src = document[currentPage].getSurface();
+  SDL_Rect s, d;
+  s.x = 0; s.y = offset; s.w = src->w; s.h = src->h;
+  d.x = 0; d.y = 0;
+  SDL_BlitSurface(src, &s, screen, &d);
   SDL_Flip(screen);
 }
 

@@ -79,10 +79,8 @@ int main(int argc, char** argv)
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 32, SDL_SWSURFACE );
 
-  // int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth*zoom);
   int stride = screen->pitch;
   console::out() << "Stride set to " << stride << std::endl;
-  // unsigned char* data = new unsigned char[stride*((int)(pageHeight*zoom))*4];
   unsigned char* data = (unsigned char*) screen->pixels;
   console::out() << "Buffer for page allocated to " << stride*((int)(pageHeight*zoom)) << " bytes." << std::endl;
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth*zoom, pageHeight*zoom, stride);

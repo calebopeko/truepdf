@@ -37,7 +37,12 @@ class Document
 {
 public:
 
+  Document()
+    : document(NULL), pageCount(0), pages() {}
+
   Document(const std::string& filename);
+
+  void open(const std::string& filename);
   
   ~Document();
 

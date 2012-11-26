@@ -75,6 +75,11 @@ Page::~Page()
 
 Document::Document(const std::string& filename)
 {
+  open(filename);
+}
+
+void Document::open(const std::string& filename)
+{
   char *absoluteFileName = getAbsoluteFileName(filename.c_str());
   char *filename_uri = g_filename_to_uri(absoluteFileName, NULL, NULL);
   g_free(absoluteFileName);

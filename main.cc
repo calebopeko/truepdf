@@ -27,6 +27,40 @@ int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
+
+
+  // GTK Stuff
+
+  gtk_init (&argc, &argv);
+  g_set_application_name("truepdf");
+
+  GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(callback_main_window_quit), NULL);
+
+  GtkWidget* mainBox = gtk_vbox_new (FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(mainWindow), mainBox);
+
+  GtkWidget* mainLabel = gtk_label_new("Test-Label");
+  gtk_box_pack_start(GTK_BOX(mainBox), mainLabel, FALSE, FALSE, 0);
+
+  GtkWidget* mainImage = gtk_image_new();
+  gtk_box_pack_start(GTK_BOX(mainBox), mainImage, TRUE, FALSE, 0);
+
+  gtk_widget_show_all(mainBox);
+
+  gtk_widget_show(mainWindow);
+
+  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), NULL);
+  // GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data (page->getData (),
+  // 						  GDK_COLORSPACE_RGB, page->hasAlpha(), 8,
+  // 						  page->getWidth(), page->getHeight(),
+  // 						  page->getRowStride(), NULL, NULL);
+  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), pixbuf);
+  // g_object_unref (pixbuf);
+
+  // gtk_main();    
+
+
   // PDF STUFF
 
   GError *error = NULL;
@@ -68,35 +102,9 @@ int main(int argc, char** argv)
   cairo_restore(context);
   cairo_save(context);
 
-  // GTK Stuff
+  poppler_page_render(page, context);
 
-  gtk_init (&argc, &argv);
-  g_set_application_name("truepdf");
-
-  GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(callback_main_window_quit), NULL);
-
-  GtkWidget* mainBox = gtk_vbox_new (FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(mainWindow), mainBox);
-
-  GtkWidget* mainLabel = gtk_label_new("Test-Label");
-  gtk_box_pack_start(GTK_BOX(mainBox), mainLabel, FALSE, FALSE, 0);
-
-  GtkWidget* mainImage = gtk_image_new();
-  gtk_box_pack_start(GTK_BOX(mainBox), mainImage, TRUE, FALSE, 0);
-
-  gtk_widget_show_all(mainBox);
-
-  gtk_widget_show(mainWindow);
-
-  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), NULL);
-  // GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data (page->getData (),
-  // 						  GDK_COLORSPACE_RGB, page->hasAlpha(), 8,
-  // 						  page->getWidth(), page->getHeight(),
-  // 						  page->getRowStride(), NULL, NULL);
-  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), pixbuf);
-  // g_object_unref (pixbuf);
-
-  // gtk_main();    
+  cairo_destroy(context);
+  cairo_surface_destroy(surface);
 }
 

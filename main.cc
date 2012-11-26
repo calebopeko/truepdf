@@ -1,23 +1,8 @@
 #include "options.h"
 #include "console.h"
+#include "pdf.h"
 
-#include <gtk/gtk.h>
-#include <poppler.h>
 #include <SDL/SDL.h>
-
-gchar* getAbsoluteFileName (const gchar *fileName)
-{
-  gchar *absoluteFileName = NULL;
-  if ( g_path_is_absolute(fileName) ) {
-      absoluteFileName = g_strdup (fileName);
-  } else {
-    gchar *currentDir = g_get_current_dir ();
-    absoluteFileName = g_build_filename (currentDir, fileName, NULL);
-    g_free (currentDir);
-  }
-
-  return absoluteFileName;
-}
 
 bool poll()
 {
@@ -52,44 +37,31 @@ int main(int argc, char** argv)
   // GTK Stuff
   gtk_init (&argc, &argv);
 
-  // PDF STUFF
-  char *absoluteFileName = getAbsoluteFileName(filename.c_str());
-  char *filename_uri = g_filename_to_uri(absoluteFileName, NULL, NULL);
-  g_free(absoluteFileName);
-  std::string file(filename_uri);
-  g_free(filename_uri);
-
-  PopplerDocument *pdfDocument = poppler_document_new_from_file(file.c_str(), NULL, NULL);
-  int pageCount = poppler_document_get_n_pages(pdfDocument);
-  console::out() << "There " << (pageCount>1?"are ":"is ") << pageCount << " page" << (pageCount>1?"s":"") << " in this document" << std::endl;
-  PopplerPage* page = poppler_document_get_page(pdfDocument, pageNumber-1);
-
-  double pageWidth, pageHeight;
-  poppler_page_get_size(page, &pageWidth, &pageHeight);
-
-  const double zoom = width/pageWidth;
+  Document document(filename);
 
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 32, SDL_SWSURFACE );
+  SDL_Surface* screen = SDL_SetVideoMode(width, width, 32, SDL_SWSURFACE );
 
-  unsigned char* data = (unsigned char*) screen->pixels;
-  cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth*zoom, pageHeight*zoom, screen->pitch);
+  // unsigned char* data = (unsigned char*) screen->pixels;
+  // cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth*zoom, pageHeight*zoom, screen->pitch);
 
-  cairo_t* context = cairo_create(surface);
-  cairo_save(context);
-  cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
-  cairo_rectangle(context, 0, 0, pageWidth*zoom, pageHeight*zoom);
-  cairo_fill(context);
-  cairo_restore(context);
-  cairo_save(context);
-  cairo_scale(context, zoom, zoom);
-  poppler_page_render(page, context);
-  cairo_destroy(context);
-  cairo_surface_destroy(surface);
+  // cairo_t* context = cairo_create(surface);
+  // cairo_save(context);
+  // cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
+  // cairo_rectangle(context, 0, 0, pageWidth*zoom, pageHeight*zoom);
+  // cairo_fill(context);
+  // cairo_restore(context);
+  // cairo_save(context);
+  // cairo_scale(context, zoom, zoom);
+  // poppler_page_render(page, context);
+  // cairo_destroy(context);
+  // cairo_surface_destroy(surface);
 
   SDL_Flip(screen);
   while ( poll() ) {
     SDL_Delay(10);
   }
+
+  return 0;
 }
 

@@ -10,7 +10,7 @@ class Presenter
 public:
 
   Presenter()
-    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(2) {}
+    : position(0), width(0), height(0), document(), screen(NULL), transitionSpace(2) {}
 
   Presenter(int width, int height, const std::string& filename);
 
@@ -20,12 +20,14 @@ public:
 
   void run();
 
+  void render();
+  
+  double position;
+
 private:
 
   static Presenter instance_;
 
-  void render();
-  
   int width, height;
 
   std::string filename;
@@ -33,8 +35,6 @@ private:
   Document document;
 
   SDL_Surface* screen;
-
-  double position;
 
   int transitionSpace;
 };

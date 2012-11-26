@@ -1,4 +1,5 @@
 #include "event.h"
+#include "presenter.h"
 
 Event Event::instance_;
 
@@ -76,8 +77,12 @@ void Event::keySingle(KeyIndex key)
 {
   switch (key) {
   case Key_ScrollUp:
+    Presenter::instance().position -= 10;
+    Presenter::instance().render();
     break;
   case Key_ScrollDown:
+    Presenter::instance().position += 10;
+    Presenter::instance().render();
     break;
   case Key_Quit:
     running = false;

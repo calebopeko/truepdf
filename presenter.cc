@@ -7,7 +7,7 @@
 Presenter Presenter::instance_;
 
 Presenter::Presenter(int w, int h, const std::string& filename)
-    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(2)
+    : position(0), width(0), height(0), document(), screen(NULL), transitionSpace(2)
 {
   init(w, h, filename);
 }
@@ -30,7 +30,6 @@ void Presenter::init(int w, int h, const std::string& file)
 
 void Presenter::render()
 {
-  position = 500;
   const double pageHeight = document[0].height; // TODO: multiple heights per document!
   const int currentPage = position/pageHeight;
   const int offset = position-currentPage*pageHeight;

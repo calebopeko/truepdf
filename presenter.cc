@@ -29,6 +29,7 @@ void Presenter::reopen()
 
 void Presenter::resize(int w, int h)
 {
+  bool changedWidth = (w != width);
   width = w;
   height = h;
 
@@ -38,8 +39,10 @@ void Presenter::resize(int w, int h)
     console::err() << "Unable to initialize SDL screen!" << std::endl;
   }
 
-  position *= ((double)w)/width;
-  document.render(width);
+  if ( changedWidth ) {
+    position *= ((double)w)/width;
+    document.render(width);
+  }
 }
 
 void Presenter::render()

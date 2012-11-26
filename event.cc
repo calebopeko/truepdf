@@ -6,8 +6,8 @@ Event Event::instance_;
 void Event::init(int fpsc)
 {
   // hardcoded standard keymapping
-  keyMap[SDLK_UP] = KeyDef(Key_ScrollUp, false);
-  keyMap[SDLK_DOWN] = KeyDef(Key_ScrollDown, false);
+  keyMap[SDLK_UP] = KeyDef(Key_ScrollUp, true);
+  keyMap[SDLK_DOWN] = KeyDef(Key_ScrollDown, true);
   keyMap[SDLK_ESCAPE] = KeyDef(Key_Quit, false);
 
   // array for pressed keys
@@ -46,6 +46,18 @@ void Event::fillFrame()
 void Event::keyPressed()
 {
   // handle continuously pressed keys
+  bool renderChange = false;
+  if ( keys[Key_ScrollUp] ) {
+    Presenter::instance().position -= 10;
+    renderChange = true;
+  } else if ( keys[Key_ScrollDown] ) {
+    Presenter::instance().position += 10;
+    renderChange = true;
+  }
+
+  if ( renderChange ) {
+    Presenter::instance().render();
+  }
 }
 
 void Event::keyUp(SDL_Event& ev)
@@ -76,14 +88,6 @@ void Event::keyDown(SDL_Event& ev)
 void Event::keySingle(KeyIndex key)
 {
   switch (key) {
-  case Key_ScrollUp:
-    Presenter::instance().position -= 10;
-    Presenter::instance().render();
-    break;
-  case Key_ScrollDown:
-    Presenter::instance().position += 10;
-    Presenter::instance().render();
-    break;
   case Key_Quit:
     running = false;
     break;

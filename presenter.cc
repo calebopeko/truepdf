@@ -30,6 +30,8 @@ void Presenter::init(int w, int h, const std::string& file)
 
 void Presenter::render()
 {
+  SDL_FillRect(screen, NULL, 0);
+
   const double pageHeight = document[0].height; // TODO: multiple heights per document!
   const int currentPage = position/pageHeight;
   const int offset = position-currentPage*pageHeight;

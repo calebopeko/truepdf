@@ -24,11 +24,11 @@ public:
   
   double position;
 
+  int width, height;
+
 private:
 
   static Presenter instance_;
-
-  int width, height;
 
   std::string filename;
 

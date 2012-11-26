@@ -12,6 +12,10 @@ class Event
     Key_None=0,
     Key_ScrollUp,
     Key_ScrollDown,
+    Key_PageUp,
+    Key_PageDown,
+    Key_Home,
+    Key_End,
 
     Key_Quit,
     Key_Total // <- last

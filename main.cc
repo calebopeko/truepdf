@@ -40,9 +40,14 @@ int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
-  const int w = options["width"];
+  const int width = options["width"];
   const int pageNumber = options["page"];
   std::string filename = options["file"];
+
+  if ( filename == "" ) {
+    options.printUsage();
+    return 0;
+  }
 
   // GTK Stuff
   gtk_init (&argc, &argv);
@@ -62,7 +67,7 @@ int main(int argc, char** argv)
   double pageWidth, pageHeight;
   poppler_page_get_size(page, &pageWidth, &pageHeight);
 
-  const double zoom = w/pageWidth;
+  const double zoom = width/pageWidth;
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 32, SDL_SWSURFACE );

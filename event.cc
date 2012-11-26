@@ -45,13 +45,14 @@ void Event::fillFrame()
   
 void Event::keyPressed()
 {
+  const double scrollSpeed = 800; // in pixel per second
   // handle continuously pressed keys
   bool renderChange = false;
   if ( keys[Key_ScrollUp] ) {
-    Presenter::instance().position -= 10;
+    Presenter::instance().position -= scrollSpeed*ifps;
     renderChange = true;
   } else if ( keys[Key_ScrollDown] ) {
-    Presenter::instance().position += 10;
+    Presenter::instance().position += scrollSpeed*ifps;
     renderChange = true;
   }
 

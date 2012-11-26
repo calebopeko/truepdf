@@ -21,6 +21,7 @@ void Presenter::init(int w, int h, const std::string& file)
   }
 
   document.open(filename);
+  document.render(width);
 }
 
 bool Presenter::poll()

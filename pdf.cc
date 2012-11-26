@@ -15,17 +15,16 @@ static inline gchar* getAbsoluteFileName (const gchar *fileName)
   return absoluteFileName;
 }
 
-void Page::prepare(PopplerPage* p, bool doRender)
+void Page::prepare(PopplerPage* p)
 {
   page = p;
   poppler_page_get_size(page, &width, &height);
-  if ( doRender ) {
-    render();
-  }
 }
 
-void Page::render()
+void Page::render(int tW)
 {
+  targetWidth = tW;
+
   Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -40,22 +39,24 @@ void Page::render()
   amask = 0xff000000;
 #endif
 
-  surface = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, rmask, gmask, bmask, amask);
+  const double zoom = targetWidth/width;
+
+  surface = SDL_CreateRGBSurface(SDL_SWSURFACE, targetWidth, zoom*height, 32, rmask, gmask, bmask, amask);
   if ( surface == NULL ) {
     console::err() << "Unable to create SDL surface" << std::endl;
     return;
   }
 
   unsigned char* data = (unsigned char*) surface->pixels;
-  cairo_surface_t *cairo_surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, width, height, surface->pitch);
+  cairo_surface_t *cairo_surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, targetWidth, zoom*height, surface->pitch);
   cairo_t* context = cairo_create(cairo_surface);
   cairo_save(context);
   cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
-  cairo_rectangle(context, 0, 0, width, height);
+  cairo_rectangle(context, 0, 0, targetWidth, zoom*height);
   cairo_fill(context);
   cairo_restore(context);
   cairo_save(context);
-  // cairo_scale(context, zoom, zoom);
+  cairo_scale(context, zoom, zoom);
   poppler_page_render(page, context);
   cairo_destroy(context);
   cairo_surface_destroy(cairo_surface);
@@ -104,10 +105,18 @@ void Document::open(const std::string& filename)
   for ( int i=0; i<pageCount; ++i ) {
     PopplerPage* page = poppler_document_get_page(document, i);
     if ( page ) {
-      pages[i].prepare(page, true);
+      pages[i].prepare(page);
     } else {
       console::err() << "Unable to get page " << i << std::endl;
     }
+  }
+}
+
+void Document::render(int tW)
+{
+  targetWidth = tW;
+  for ( int i=0; i<pageCount; ++i ) {
+    pages[i].render(targetWidth);
   }
 }
 

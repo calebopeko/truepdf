@@ -30,6 +30,7 @@ void Presenter::reopen()
 void Presenter::resize(int w, int h)
 {
   bool changedWidth = (w != width);
+  double oldWidth = width;
   width = w;
   height = h;
 
@@ -40,7 +41,9 @@ void Presenter::resize(int w, int h)
   }
 
   if ( changedWidth ) {
-    position *= ((double)w)/width;
+    if ( oldWidth !=  0 ) {
+      position *= ((double)width)/oldWidth;
+    }
     document.render(width);
   }
 }

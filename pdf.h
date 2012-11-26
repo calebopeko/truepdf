@@ -7,6 +7,7 @@
 #include <poppler.h>
 #include <vector>
 #include <string>
+#include <assert.h>
 
 class Page
 {
@@ -20,6 +21,9 @@ public:
   void prepare(PopplerPage* page, bool render=false);
 
   void render();
+
+  SDL_Surface* getSurface() { return surface; }
+  const SDL_Surface* getSurface() const { return surface; }
 
 private:
 
@@ -43,6 +47,9 @@ public:
   Document(const std::string& filename);
 
   void open(const std::string& filename);
+
+  Page& operator[](int i) { assert(0<=i && i<pageCount); return pages[i]; }
+  const Page& operator[](int i) const { assert(0<=i && i<pageCount); return pages[i]; }
   
   ~Document();
 

@@ -19,6 +19,8 @@ public:
 
 private:
 
+  void render();
+
   bool poll();
   
   int width, height;

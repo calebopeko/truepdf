@@ -26,7 +26,6 @@ void Page::prepare(PopplerPage* p, bool doRender)
 
 void Page::render()
 {
-  SDL_Surface *surface;
   Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -68,8 +67,12 @@ void Page::render()
 
 Page::~Page()
 {
-  if ( page ) {
-    g_object_unref(page);
+  // if ( page ) {
+  //   g_object_unref(page);
+  // }
+
+  if ( surface ) {
+    SDL_FreeSurface(surface);
   }
 }
 
@@ -80,8 +83,8 @@ Document::Document(const std::string& filename)
 
 void Document::open(const std::string& filename)
 {
-  char *absoluteFileName = getAbsoluteFileName(filename.c_str());
-  char *filename_uri = g_filename_to_uri(absoluteFileName, NULL, NULL);
+  gchar *absoluteFileName = getAbsoluteFileName(filename.c_str());
+  gchar *filename_uri = g_filename_to_uri(absoluteFileName, NULL, NULL);
   g_free(absoluteFileName);
   std::string file(filename_uri);
   g_free(filename_uri);
@@ -110,7 +113,9 @@ void Document::open(const std::string& filename)
 
 Document::~Document()
 {
-  if ( document ) {
-    g_object_unref(document);
-  }
+  // if ( document ) {
+  //   g_object_unref(document);
+  // }
+
+  SDL_Quit();
 }

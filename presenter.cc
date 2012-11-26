@@ -61,5 +61,9 @@ void Presenter::run()
   render();
   while ( event.poll() ) {
     event.fillFrame();
+
+    // if ( event.diag(1000) ) {
+    //   console::out() << event.getFps() << std::endl;
+    // }    
   }
 }

@@ -27,61 +27,71 @@ int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
-    gtk_init (&argc, &argv);
-    g_set_application_name("truepdf");
+  // PDF STUFF
 
-    GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(callback_main_window_quit), NULL);
+  GError *error = NULL;
 
-    GtkWidget* mainBox = gtk_vbox_new (FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(mainWindow), mainBox);
+  const char* filename = "test.pdf";
+  gchar *absoluteFileName = getAbsoluteFileName(filename);
+  gchar *filename_uri = g_filename_to_uri(absoluteFileName, NULL, &error);
 
-    GtkWidget* mainLabel = gtk_label_new("Test-Label");
-    gtk_box_pack_start(GTK_BOX(mainBox), mainLabel, FALSE, FALSE, 0);
+  PopplerDocument *pdfDocument = poppler_document_new_from_file(filename_uri, NULL, &error);
 
-    GtkWidget* mainImage = gtk_image_new();
-    gtk_box_pack_start(GTK_BOX(mainBox), mainImage, TRUE, FALSE, 0);
+  g_free(absoluteFileName);
+  g_free(filename_uri);
 
-    gtk_widget_show_all(mainBox);
+  if ( NULL == pdfDocument ) {
+    console::out() << "Error loading pdf document!" << std::endl;
+  } else {
+    console::out() << "Pdf document successfully loaded!" << std::endl;
+  }
 
-    gtk_widget_show(mainWindow);
+  PopplerPage* page = poppler_document_get_page(pdfDocument, 0);
+  if ( page == NULL ) {
+    console::out() << "Error loading page!" << std::endl;
+  } else {
+    console::out() << "Page successfully loaded!" << std::endl;
+  }
 
-    // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), NULL);
-    // GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data (page->getData (),
-    // 						  GDK_COLORSPACE_RGB, page->hasAlpha(), 8,
-    // 						  page->getWidth(), page->getHeight(),
-    // 						  page->getRowStride(), NULL, NULL);
-    // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), pixbuf);
-    // g_object_unref (pixbuf);
+  gdouble pageWidth, pageHeight;
+  poppler_page_get_size(page, &pageWidth, &pageHeight);
+  console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
-    GError *error = NULL;
+  int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
+  unsigned char* data = new unsigned char[stride*((int)pageHeight)];
+  cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
 
-    const char* filename = "test.pdf";
-    gchar *absoluteFileName = getAbsoluteFileName(filename);
-    gchar *filename_uri = g_filename_to_uri(absoluteFileName, NULL, &error);
+  
 
-    PopplerDocument *pdfDocument = poppler_document_new_from_file(filename_uri, NULL, &error);
+  // GTK Stuff
 
-    g_free(absoluteFileName);
-    g_free(filename_uri);
+  gtk_init (&argc, &argv);
+  g_set_application_name("truepdf");
 
-    if ( NULL == pdfDocument ) {
-      console::out() << "Error loading pdf document!" << std::endl;
-    } else {
-      console::out() << "Pdf document successfully loaded!" << std::endl;
-    }
+  GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(callback_main_window_quit), NULL);
 
-    PopplerPage* page = poppler_document_get_page(pdfDocument, 0);
-    if ( page == NULL ) {
-      console::out() << "Error loading page!" << std::endl;
-    } else {
-      console::out() << "Page successfully loaded!" << std::endl;
-    }
+  GtkWidget* mainBox = gtk_vbox_new (FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(mainWindow), mainBox);
 
-    gdouble pageWidth, pageHeight;
-    poppler_page_get_size(page, &pageWidth, &pageHeight);
-    console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
+  GtkWidget* mainLabel = gtk_label_new("Test-Label");
+  gtk_box_pack_start(GTK_BOX(mainBox), mainLabel, FALSE, FALSE, 0);
 
-    // gtk_main();    
+  GtkWidget* mainImage = gtk_image_new();
+  gtk_box_pack_start(GTK_BOX(mainBox), mainImage, TRUE, FALSE, 0);
+
+  gtk_widget_show_all(mainBox);
+
+  gtk_widget_show(mainWindow);
+
+  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), NULL);
+  // GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data (page->getData (),
+  // 						  GDK_COLORSPACE_RGB, page->hasAlpha(), 8,
+  // 						  page->getWidth(), page->getHeight(),
+  // 						  page->getRowStride(), NULL, NULL);
+  // gtk_image_set_from_pixbuf (GTK_IMAGE (mainImage), pixbuf);
+  // g_object_unref (pixbuf);
+
+  // gtk_main();    
 }
 

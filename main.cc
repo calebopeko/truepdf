@@ -73,6 +73,7 @@ int main(int argc, char** argv)
   console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
   int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
+  console::out() << "Stride set to " << stride << std::endl;
   unsigned char* data = new unsigned char[stride*((int)pageHeight)*4];
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
   cairo_t* context = cairo_create(surface);
@@ -91,14 +92,15 @@ int main(int argc, char** argv)
 
 
   // SDL stuff
-  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 32, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
   int bpp = screen->format->BytesPerPixel;
 
   for ( int iy=0; iy<pageWidth; iy++ ) {
     for ( int ix=0; ix<pageWidth; ix++ ) {
       Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
+      Uint8 *d = (Uint8 *)data + iy*stride + ix*4;
       for ( int b = 0; b<3; b++ ) {
-	p[b] = data[(ix+iy*stride)*4+b];
+	p[b] = d[b];
       }
     }
   }

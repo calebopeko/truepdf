@@ -74,6 +74,7 @@ Page::~Page()
 }
 
 Document::Document(const std::string& filename)
+  : pageCount(0), document(NULL), targetWidth(1), pages()
 {
   open(filename);
 }

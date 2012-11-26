@@ -54,10 +54,10 @@ void Event::keyPressed()
   // handle continuously pressed keys
   bool renderChange = false;
   if ( keys[Key_ScrollUp] ) {
-    Presenter::instance().position -= scrollSpeed*ifps;
+    Presenter::instance().setPosition(Presenter::instance().getPosition() - scrollSpeed*ifps);
     renderChange = true;
   } else if ( keys[Key_ScrollDown] ) {
-    Presenter::instance().position += scrollSpeed*ifps;
+    Presenter::instance().setPosition(Presenter::instance().getPosition() + scrollSpeed*ifps);
     renderChange = true;
   }
 
@@ -95,15 +95,15 @@ void Event::keySingle(KeyIndex key)
 {
   switch (key) {
   case Key_PageDown:
-    Presenter::instance().position += Presenter::instance().height;
+    Presenter::instance().setPosition(Presenter::instance().getPosition() + Presenter::instance().height);
     Presenter::instance().render();
     break;
   case Key_PageUp:
-    Presenter::instance().position -= Presenter::instance().height;
+    Presenter::instance().setPosition(Presenter::instance().getPosition() - Presenter::instance().height);
     Presenter::instance().render();
     break;
   case Key_Home:
-    Presenter::instance().position = 0;
+    Presenter::instance().setPosition(0);
     Presenter::instance().render();
     break;
   case Key_End:

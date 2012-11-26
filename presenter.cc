@@ -7,7 +7,7 @@
 Presenter Presenter::instance_;
 
 Presenter::Presenter(int w, int h, const std::string& filename)
-    : position(0), width(0), height(0), document(), screen(NULL), transitionSpace(2)
+    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2)
 {
   init(w, h, filename);
 }
@@ -39,24 +39,26 @@ void Presenter::render()
 {
   SDL_FillRect(screen, NULL, 0);
 
-  const double pageHeight = document[0].getSurface()->h; // TODO: multiple heights per document!
+  const int pageHeight = document[0].getSurface()->h; // TODO: multiple heights per document!
   const int currentPage = position/pageHeight;
-  const int offset = position-currentPage*pageHeight;
-  SDL_Surface* src = document[currentPage].getSurface();
-  SDL_Rect s;
-  s.x = 0; s.y = offset; s.w = src->w; s.h = std::min(src->h - offset, height);
-  SDL_BlitSurface(src, &s, screen, NULL);
+  if ( currentPage < document.pageCount ) {
+    const int offset = position-currentPage*pageHeight;
+    SDL_Surface* src = document[currentPage].getSurface();
+    SDL_Rect s;
+    s.x = 0; s.y = offset; s.w = src->w; s.h = std::min(src->h - offset, height);
+    SDL_BlitSurface(src, &s, screen, NULL);
 
-  int renderPos = std::min(src->h - offset, height) + transitionSpace;
-  int pageOffset = 1;
-  while ( renderPos < height ) { // TODO: Check for end of page list
-    SDL_Surface* next = document[currentPage+pageOffset].getSurface();
-    SDL_Rect nextRec, nextDest;
-    nextRec.x = 0; nextRec.y = 0; nextRec.w = next->w; nextRec.h = std::min(height - renderPos, next->h);
-    nextDest.x = 0; nextDest.y = renderPos;
-    SDL_BlitSurface(next, &nextRec, screen, &nextDest);
-    renderPos += next->h + transitionSpace;
-    pageOffset++;
+    int renderPos = std::min(src->h - offset, height) + transitionSpace;
+    int pageOffset = 1;
+    while ( renderPos < height && currentPage + pageOffset < document.pageCount ) {
+      SDL_Surface* next = document[currentPage+pageOffset].getSurface();
+      SDL_Rect nextRec, nextDest;
+      nextRec.x = 0; nextRec.y = 0; nextRec.w = next->w; nextRec.h = std::min(height - renderPos, next->h);
+      nextDest.x = 0; nextDest.y = renderPos;
+      SDL_BlitSurface(next, &nextRec, screen, &nextDest);
+      renderPos += next->h + transitionSpace;
+      pageOffset++;
+    }
   }
 
   SDL_Flip(screen);

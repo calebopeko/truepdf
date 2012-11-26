@@ -44,7 +44,7 @@ class Document
 public:
 
   Document()
-    : document(NULL), pageCount(0), targetWidth(1), pages() {}
+    : pageCount(0), document(NULL), targetWidth(1), pages() {}
 
   Document(const std::string& filename);
 
@@ -57,11 +57,13 @@ public:
   
   ~Document();
 
+  int pageCount;
+
 private:
 
   PopplerDocument* document;
 
-  int pageCount, targetWidth;
+  int targetWidth;
 
   std::vector<Page> pages;
 

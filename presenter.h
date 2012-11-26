@@ -10,7 +10,7 @@ class Presenter
 public:
 
   Presenter()
-    : position(0), width(0), height(0), document(), screen(NULL), transitionSpace(2) {}
+    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2) {}
 
   Presenter(int width, int height, const std::string& filename);
 
@@ -24,13 +24,18 @@ public:
 
   void resize(int w);
   
-  double position;
+  double getPosition() { return position; }
+  void setPosition(double p) { position = p; clamp(); }
+
+  void clamp() { if ( position < 0 ) position = 0; }
 
   int width, height;
 
 private:
 
   static Presenter instance_;
+
+  double position;
 
   std::string filename;
 

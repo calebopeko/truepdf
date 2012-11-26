@@ -3,6 +3,7 @@
 #define PRESENTER_H
 
 #include "pdf.h"
+#include "event.h"
 
 class Presenter
 {
@@ -13,15 +14,17 @@ public:
 
   Presenter(int width, int height, const std::string& filename);
 
+  static Presenter& instance() { return instance_; }
+
   void init(int width, int height, const std::string& filename);
 
   void run();
 
 private:
 
-  void render();
+  static Presenter instance_;
 
-  bool poll();
+  void render();
   
   int width, height;
 

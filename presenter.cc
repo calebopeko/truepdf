@@ -4,6 +4,8 @@
 #include <cmath>
 #include <SDL/SDL.h>
 
+Presenter Presenter::instance_;
+
 Presenter::Presenter(int w, int h, const std::string& filename)
     : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(2)
 {
@@ -24,23 +26,6 @@ void Presenter::init(int w, int h, const std::string& file)
 
   document.open(filename);
   document.render(width);
-}
-
-bool Presenter::poll()
-{
-  SDL_Event ev;
-  while ( SDL_PollEvent( &ev ) ) {
-    switch (ev.type) {
-    case SDL_KEYDOWN:
-      if ( ev.key.keysym.sym == SDLK_ESCAPE ) {
-	return false;
-      }
-      break;
-    case SDL_QUIT:
-      return false;
-    }
-  }
-  return true;
 }
 
 void Presenter::render()
@@ -65,17 +50,15 @@ void Presenter::render()
     renderPos += next->h + transitionSpace;
     pageOffset++;
   }
-  if ( pageHeight - offset < height ) {
-    
-  }
 
   SDL_Flip(screen);
 }
 
 void Presenter::run()
 {
+  Event& event = Event::instance();
   render();
-  while ( poll() ) {
-    SDL_Delay(10);
+  while ( event.poll() ) {
+    event.fillFrame();
   }
 }

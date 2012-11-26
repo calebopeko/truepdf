@@ -22,7 +22,7 @@ public:
 
   void render();
 
-  void resize(int w);
+  void resize(int w, int h);
   
   double getPosition() { return position; }
   void setPosition(double p) { position = p; clamp(); }

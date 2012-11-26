@@ -148,8 +148,7 @@ bool Event::poll()
       break;
     case SDL_VIDEORESIZE:
       {
-	// iVec size(ev.resize.w, ev.resize.h);
-	Presenter::instance().resize(ev.resize.w);
+	Presenter::instance().resize(ev.resize.w, ev.resize.h);
 	Presenter::instance().render();
       }
       break;

@@ -14,24 +14,24 @@ Presenter::Presenter(int w, int h, const std::string& filename)
 
 void Presenter::init(int w, int h, const std::string& file)
 {
-  width = w;
-  height = h;
   filename = file;
 
+  document.open(filename);
+  resize(w,h);
+}
+
+void Presenter::resize(int w, int h)
+{
+  width = w;
+  height = h;
+
   SDL_Init(SDL_INIT_VIDEO);
-  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
   if ( !screen ) {
     console::err() << "Unable to initialize SDL screen!" << std::endl;
   }
 
-  document.open(filename);
-  resize(w);
-}
-
-void Presenter::resize(int w)
-{
   position *= ((double)w)/width;
-  width = w;
   document.render(width);
 }
 

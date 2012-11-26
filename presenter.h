@@ -9,7 +9,7 @@ class Presenter
 public:
 
   Presenter()
-    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(10) {}
+    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(2) {}
 
   Presenter(int width, int height, const std::string& filename);
 

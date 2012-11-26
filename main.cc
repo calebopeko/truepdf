@@ -17,7 +17,7 @@ int main(int argc, char** argv)
   // GTK Stuff
   gtk_init (&argc, &argv);
 
-  Presenter presenter(width, width, filename);
+  Presenter presenter(width, 4*width, filename);
   presenter.run();
 
   return 0;

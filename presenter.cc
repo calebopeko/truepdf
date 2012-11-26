@@ -5,7 +5,7 @@
 #include <SDL/SDL.h>
 
 Presenter::Presenter(int w, int h, const std::string& filename)
-    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(10)
+    : width(0), height(0), document(), screen(NULL), position(0), transitionSpace(2)
 {
   init(w, h, filename);
 }
@@ -55,7 +55,6 @@ void Presenter::render()
   SDL_BlitSurface(src, &s, screen, NULL);
 
   int renderPos = std::min(src->h - offset, height) + transitionSpace;
-  console::out() << renderPos << std::endl;
   int pageOffset = 1;
   while ( renderPos < height ) { // TODO: Check for end of page list
     SDL_Surface* next = document[currentPage+pageOffset].getSurface();
@@ -63,7 +62,7 @@ void Presenter::render()
     nextRec.x = 0; nextRec.y = 0; nextRec.w = next->w; nextRec.h = std::min(height - renderPos, next->h);
     nextDest.x = 0; nextDest.y = renderPos;
     SDL_BlitSurface(next, &nextRec, screen, &nextDest);
-    renderPos += next->h;
+    renderPos += next->h + transitionSpace;
     pageOffset++;
   }
   if ( pageHeight - offset < height ) {

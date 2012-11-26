@@ -75,10 +75,16 @@ int main(int argc, char** argv)
   poppler_page_get_size(page, &pageWidth, &pageHeight);
   console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
 
-  int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth*zoom);
+
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 32, SDL_SWSURFACE );
+
+  // int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth*zoom);
+  int stride = screen->pitch;
   console::out() << "Stride set to " << stride << std::endl;
-  unsigned char* data = new unsigned char[stride*((int)(pageHeight*zoom))*4];
-  console::out() << "Buffer for page allocated to " << stride*((int)(pageHeight*zoom))*4 << " bytes." << std::endl;
+  // unsigned char* data = new unsigned char[stride*((int)(pageHeight*zoom))*4];
+  unsigned char* data = (unsigned char*) screen->pixels;
+  console::out() << "Buffer for page allocated to " << stride*((int)(pageHeight*zoom)) << " bytes." << std::endl;
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth*zoom, pageHeight*zoom, stride);
   cairo_t* context = cairo_create(surface);
   cairo_save(context);
@@ -94,27 +100,9 @@ int main(int argc, char** argv)
   cairo_destroy(context);
   cairo_surface_destroy(surface);
 
-
-  // SDL stuff
-  SDL_Init(SDL_INIT_VIDEO);
-  SDL_Surface* screen = SDL_SetVideoMode(pageWidth*zoom, pageHeight*zoom, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
-  int bpp = screen->format->BytesPerPixel;
-
-  for ( int iy=0; iy<pageHeight*zoom; iy++ ) {
-    for ( int ix=0; ix<pageWidth*zoom; ix++ ) {
-      Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
-      Uint8 *d = (Uint8 *)data + iy*stride + ix*4;
-      for ( int b = 0; b<3; b++ ) {
-	p[b] = d[b];
-      }
-    }
-  }
-
+  SDL_Flip(screen);
   while ( poll() ) {
     SDL_Delay(10);
-    SDL_Flip(screen);
   }
-  
-  delete[] data;
 }
 

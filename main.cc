@@ -2,35 +2,114 @@
 #include "console.h"
 
 #include <gtk/gtk.h>
+#include <poppler.h>
+#include <SDL/SDL.h>
 
-void callback_main_window_quit(GtkWidget *widget, gpointer data)
+gchar* getAbsoluteFileName (const gchar *fileName)
 {
-    gtk_main_quit ();
+  gchar *absoluteFileName = NULL;
+  if ( g_path_is_absolute(fileName) ) {
+      absoluteFileName = g_strdup (fileName);
+  } else {
+    gchar *currentDir = g_get_current_dir ();
+    absoluteFileName = g_build_filename (currentDir, fileName, NULL);
+    g_free (currentDir);
+  }
+
+  return absoluteFileName;
+}
+
+bool poll()
+{
+  SDL_Event ev;
+  while ( SDL_PollEvent( &ev ) ) {
+    switch (ev.type) {
+    case SDL_KEYDOWN:
+      if ( ev.key.keysym.sym == SDLK_ESCAPE ) {
+	return false;
+      }
+      break;
+    case SDL_QUIT:
+      return false;
+    }
+  }
+  return true;
 }
 
 int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
-    gtk_init (&argc, &argv);
-    g_set_application_name("truepdf");
+  // GTK Stuff
+  gtk_init (&argc, &argv);
 
-    GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(callback_main_window_quit), NULL);
+  // PDF STUFF
+  GError *error = NULL;
 
-    GtkWidget* mainBox = gtk_vbox_new (FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(mainWindow), mainBox);
+  const char* filename = "test.pdf";
+  gchar *absoluteFileName = getAbsoluteFileName(filename);
+  gchar *filename_uri = g_filename_to_uri(absoluteFileName, NULL, &error);
 
-    GtkWidget* mainLabel = gtk_label_new("Test-Label");
-    gtk_box_pack_start(GTK_BOX(mainBox), mainLabel, FALSE, FALSE, 0);
+  PopplerDocument *pdfDocument = poppler_document_new_from_file(filename_uri, NULL, &error);
 
-    GtkWidget* mainImage = gtk_image_new();
-    gtk_box_pack_start(GTK_BOX(mainBox), mainImage, TRUE, FALSE, 0);
+  g_free(absoluteFileName);
+  g_free(filename_uri);
 
-    gtk_widget_show_all(mainBox);
+  if ( NULL == pdfDocument ) {
+    console::out() << "Error loading pdf document!" << std::endl;
+  } else {
+    console::out() << "Pdf document successfully loaded!" << std::endl;
+  }
 
-    gtk_widget_show(mainWindow);
+  PopplerPage* page = poppler_document_get_page(pdfDocument, 0);
+  if ( page == NULL ) {
+    console::out() << "Error loading page!" << std::endl;
+  } else {
+    console::out() << "Page successfully loaded!" << std::endl;
+  }
 
-    gtk_main();    
+  gdouble pageWidth, pageHeight;
+  poppler_page_get_size(page, &pageWidth, &pageHeight);
+  console::out() << "Page is " << pageWidth << "x" << pageHeight << std::endl;
+
+  int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
+  console::out() << "Stride set to " << stride << std::endl;
+  unsigned char* data = new unsigned char[stride*((int)pageHeight)*4];
+  cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
+  cairo_t* context = cairo_create(surface);
+  cairo_save(context);
+  cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
+  cairo_rectangle(context, 0, 0, pageWidth, pageHeight);
+  cairo_fill(context);
+  cairo_restore(context);
+  cairo_save(context);
+
+  // cairo_scale(context, 10.0, 10.0);
+  poppler_page_render(page, context);
+
+  cairo_destroy(context);
+  cairo_surface_destroy(surface);
+
+
+  // SDL stuff
+  SDL_Surface* screen = SDL_SetVideoMode(pageWidth, pageHeight, 24, SDL_SWSURFACE | SDL_DOUBLEBUF );
+  int bpp = screen->format->BytesPerPixel;
+
+  for ( int iy=0; iy<pageWidth; iy++ ) {
+    for ( int ix=0; ix<pageWidth; ix++ ) {
+      Uint8 *p = (Uint8 *)screen->pixels + iy * screen->pitch + ix * bpp;
+      Uint8 *d = (Uint8 *)data + iy*stride + ix*4;
+      for ( int b = 0; b<3; b++ ) {
+	p[b] = d[b];
+      }
+    }
+  }
+
+  while ( poll() ) {
+    SDL_Delay(10);
+    SDL_Flip(screen);
+  }
+  
+  delete[] data;
 }
 

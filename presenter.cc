@@ -19,7 +19,7 @@ void Presenter::init(int w, int h, const std::string& file)
   filename = file;
 
   SDL_Init(SDL_INIT_VIDEO);
-  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE );
+  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF );
   if ( !screen ) {
     console::err() << "Unable to initialize SDL screen!" << std::endl;
   }

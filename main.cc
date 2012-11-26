@@ -5,19 +5,18 @@ int main(int argc, char** argv)
 {
   Options options(argc, argv);
 
-  const int width = options["width"];
-  const int pageNumber = options["page"];
-  std::string filename = options["file"];
-
-  if ( filename == "" ) {
+  if ( (std::string) options["file"] == "" ) {
     options.printUsage();
     return 0;
   }
 
-  // GTK Stuff
   gtk_init (&argc, &argv);
 
-  Presenter presenter(width, width, filename);
+  Event& event = Event::instance();
+  event.init(100);
+
+  Presenter& presenter = Presenter::instance();
+  presenter.init(options["width"], options["height"], options["file"]);
   presenter.run();
 
   return 0;

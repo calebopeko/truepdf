@@ -7,8 +7,8 @@
 
 void Options::init()
 {
-  addParam("width", "100", "Set window width.", 'w');
-  addParam("page", "1", "Set the page to display.", 'p');
+  addParam("width", "300", "Set the window width.", 'w');
+  addParam("height", "500", "Set the window height.", 'h');
   addParam("file", "", "Set the document to load.", 'f');
 }
 

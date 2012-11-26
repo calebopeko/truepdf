@@ -25,9 +25,9 @@ public:
   SDL_Surface* getSurface() { return surface; }
   const SDL_Surface* getSurface() const { return surface; }
 
-private:
-
   double width, height;
+
+private:
 
   int targetWidth;
 

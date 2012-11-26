@@ -60,8 +60,13 @@ int main(int argc, char** argv)
   int stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, pageWidth);
   unsigned char* data = new unsigned char[stride*((int)pageHeight)];
   cairo_surface_t *surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_RGB24, pageWidth, pageHeight, stride);
-
-  
+  cairo_t* context = cairo_create(surface);
+  cairo_save(context);
+  cairo_set_source_rgb(context, 1.0, 1.0, 1.0);
+  cairo_rectangle(context, 0, 0, pageWidth, pageHeight);
+  cairo_fill(context);
+  cairo_restore(context);
+  cairo_save(context);
 
   // GTK Stuff
 

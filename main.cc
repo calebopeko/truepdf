@@ -38,9 +38,11 @@ bool poll()
 
 int main(int argc, char** argv)
 {
-  const double zoom = 1.0;
-
   Options options(argc, argv);
+
+  const double zoom = options["zoom"];
+  const int pageNumber = options["page"];
+  std::string filename = options["file"];
 
   // GTK Stuff
   gtk_init (&argc, &argv);
@@ -48,8 +50,7 @@ int main(int argc, char** argv)
   // PDF STUFF
   GError *error = NULL;
 
-  const char* filename = "test.pdf";
-  gchar *absoluteFileName = getAbsoluteFileName(filename);
+  gchar *absoluteFileName = getAbsoluteFileName(filename.c_str());
   gchar *filename_uri = g_filename_to_uri(absoluteFileName, NULL, &error);
 
   PopplerDocument *pdfDocument = poppler_document_new_from_file(filename_uri, NULL, &error);
@@ -63,7 +64,7 @@ int main(int argc, char** argv)
     console::out() << "Pdf document successfully loaded!" << std::endl;
   }
 
-  PopplerPage* page = poppler_document_get_page(pdfDocument, 3);
+  PopplerPage* page = poppler_document_get_page(pdfDocument, pageNumber-1);
   if ( page == NULL ) {
     console::out() << "Error loading page!" << std::endl;
   } else {

@@ -133,6 +133,10 @@ void Event::mouseMove(int x, int y)
     mouseLastX = x;
     mouseLastY = y;
   }
+  if ( mouseRightDown ) {
+    mouseLastX = x;
+    mouseLastY = y;
+  }
 }
 
 bool Event::poll()
@@ -150,8 +154,18 @@ bool Event::poll()
     case SDL_MOUSEBUTTONDOWN:
       if (ev.button.button == SDL_BUTTON_LEFT) {
 	mouseLeftDown = true;
+	mouseRightDown = false;
 	mouseLastX = ev.button.x;
 	mouseLastY = ev.button.y;
+      }
+      if (ev.button.button == SDL_BUTTON_RIGHT) {
+	mouseRightDown = !mouseRightDown;
+	if ( mouseRightDown ) {
+	  mouseLeftDown = false;
+	  mouseLastX = ev.button.x;
+	  mouseLastY = ev.button.y;
+	  mouseStartY = ev.button.y;
+	}
       }
       // if (ev.button.button == SDL_BUTTON_RIGHT) {
       // }
@@ -175,6 +189,15 @@ bool Event::poll()
     }
   }
   keyPressed();
+
+  if ( mouseRightDown ) {
+    const int delta = mouseLastY - mouseStartY;
+    if ( delta != 0 ) {
+      const double factor = -0.1;
+      Presenter::instance().setPosition(Presenter::instance().getPosition() - factor*delta);
+      Presenter::instance().render();
+    }    
+  }
 
   return running;
 }

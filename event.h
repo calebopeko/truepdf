@@ -81,9 +81,11 @@ class Event
 
   bool keys[Key_Total];
 
-  bool mouseLeftDown;
+  bool mouseLeftDown, mouseRightDown;
 
   int mouseLastX, mouseLastY;
+
+  int mouseStartY;
 };
 
 #endif

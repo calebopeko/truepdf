@@ -108,7 +108,8 @@ void Event::keySingle(KeyIndex key)
     Presenter::instance().render();
     break;
   case Key_End:
-    console::out() << "Not yet implemented!" << std::endl;
+    Presenter::instance().setPosition(Presenter::instance().getDocument().pageCount*Presenter::instance().getDocument().pageHeight() - Presenter::instance().height);
+    Presenter::instance().render();
     break;
   case Key_Reopen:
     Presenter::instance().reopen();

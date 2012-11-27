@@ -35,7 +35,7 @@ class Event
 
  public:
 
-  Event() : fpsCap(25), frameAim(1000./fpsCap), fps(1), running(true) {}
+  Event() : fpsCap(25), frameAim(1000./fpsCap), fps(1), running(true), mouseLeftDown(false) {}
 
   static Event& instance() { return instance_; }
 
@@ -80,6 +80,10 @@ class Event
   bool running;
 
   bool keys[Key_Total];
+
+  bool mouseLeftDown;
+
+  int mouseLastX, mouseLastY;
 };
 
 #endif

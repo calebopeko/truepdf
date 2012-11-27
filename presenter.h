@@ -31,7 +31,7 @@ public:
 
   Document& getDocument() { return document; }
 
-  void clamp() { if ( position < 0 ) position = 0; }
+  void clamp();
 
   int width, height;
 

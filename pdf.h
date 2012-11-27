@@ -52,6 +52,8 @@ public:
 
   void render(int targetWidth);
 
+  int pageHeight();
+
   Page& operator[](int i) { assert(0<=i && i<pageCount); return pages[i]; }
   const Page& operator[](int i) const { assert(0<=i && i<pageCount); return pages[i]; }
   

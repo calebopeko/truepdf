@@ -120,6 +120,11 @@ void Document::render(int tW)
   if ( console::verbose() ) console::out() << "Done." << std::endl;
 }
 
+int Document::pageHeight()
+{
+  return targetWidth/pages[0].width*pages[0].height;
+}
+
 Document::~Document()
 {
   // if ( document ) {

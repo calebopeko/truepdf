@@ -5,7 +5,7 @@
 namespace console
 {
 
-  static bool verbose_=false;
+  static bool verbose_=true;
 
   void out(const char* c)
   {

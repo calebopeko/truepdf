@@ -35,7 +35,8 @@ void Presenter::resize(int w, int h)
   height = h;
 
   SDL_Init(SDL_INIT_VIDEO);
-  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
+  // screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
+  screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
   if ( !screen ) {
     console::err() << "Unable to initialize SDL screen!" << std::endl;
   }

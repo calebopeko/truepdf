@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   gtk_init (&argc, &argv);
 
   Event& event = Event::instance();
-  event.init(100);
+  event.init(30);
 
   Presenter& presenter = Presenter::instance();
   presenter.init(options["width"], options["height"], options["file"]);

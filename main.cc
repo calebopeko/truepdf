@@ -1,5 +1,6 @@
 #include "options.h"
 #include "presenter.h"
+#include "console.h"
 
 int main(int argc, char** argv)
 {
@@ -9,6 +10,8 @@ int main(int argc, char** argv)
     options.printUsage();
     return -1;
   }
+
+  console::verbose(options["verbose"]);
 
   gtk_init (&argc, &argv);
 

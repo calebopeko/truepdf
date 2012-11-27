@@ -10,6 +10,7 @@ void Options::init()
   addParam("width", "300", "Set the window width.", 'w');
   addParam("height", "500", "Set the window height.", 'h');
   addParam("file", "", "Set the document to load.", 'f');
+  addParam("verbose", "0", "Set verbosity.", 'v');
 }
 
 void Options::addParam(const std::string& name, const std::string& initial, const std::string& description, char abbrev)

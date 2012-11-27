@@ -44,6 +44,7 @@ void Presenter::resize(int w, int h)
   if ( changedWidth ) {
     if ( oldWidth !=  0 ) {
       position *= ((double)width)/oldWidth;
+      clamp();
     }
     document.render(width);
   }
@@ -89,4 +90,11 @@ void Presenter::run()
     //   console::out() << event.getFps() << std::endl;
     // }    
   }
+}
+
+void Presenter::clamp()
+{ 
+  const int maxPos = (document.pageCount*document.pageHeight()) - height;
+  if ( position < 0 ) position = 0;
+  if ( position > maxPos ) position = maxPos;
 }

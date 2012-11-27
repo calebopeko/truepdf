@@ -44,6 +44,7 @@ void Presenter::resize(int w, int h)
   if ( changedWidth ) {
     if ( oldWidth !=  0 ) {
       position *= ((double)width)/oldWidth;
+      clamp();
     }
     document.render(width);
   }

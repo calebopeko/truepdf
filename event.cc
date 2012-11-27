@@ -193,8 +193,8 @@ bool Event::poll()
   if ( mouseRightDown ) {
     const int delta = mouseLastY - mouseStartY;
     if ( delta != 0 ) {
-      const double factor = -0.1;
-      Presenter::instance().setPosition(Presenter::instance().getPosition() - factor*delta);
+      const double factor = -0.001;
+      Presenter::instance().setPosition(Presenter::instance().getPosition() - factor*delta*abs(delta));
       Presenter::instance().render();
     }    
   }

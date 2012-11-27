@@ -51,7 +51,7 @@ void Event::fillFrame()
   
 void Event::keyPressed()
 {
-  const double scrollSpeed = 800; // in pixel per second
+  const double scrollSpeed = Presenter::instance().getDocument().pageHeight() * 0.5; // in pixel per second
   // handle continuously pressed keys
   bool renderChange = false;
   if ( keys[Key_ScrollUp] ) {

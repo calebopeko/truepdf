@@ -29,6 +29,8 @@ public:
   double getPosition() { return position; }
   void setPosition(double p) { position = p; clamp(); }
 
+  Document& getDocument() { return document; }
+
   void clamp() { if ( position < 0 ) position = 0; }
 
   int width, height;

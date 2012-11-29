@@ -61,11 +61,18 @@ void Options::dump(const std::string& filename)
 void Options::parse(int argc, char** argv)
 {
   if ( argc == 2 ) {
-    printUsage();
-    exit(-1);
+    std::string value(argv[1]);
+    if ( value[0] != '-' ) {
+      values["file"].value = value;
+      return;
+    } else {
+      printUsage();
+      exit(-1);
+    }
   }
   for ( int i=0; i<(argc-1)/2; ++i ) {
     std::string key(argv[2*i+1]), value(argv[2*i+2]);
+
     size_t start = key.find_first_not_of("-");
     if ( start != std::string::npos ) {
       key = key.substr(start);
@@ -82,6 +89,9 @@ void Options::parse(int argc, char** argv)
       printUsage();
       exit(-1);
     }
+  }
+  if ( (argc & 1) == 0 ) {
+    values["file"].value = std::string(argv[argc-1]);
   }
 }
 

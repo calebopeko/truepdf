@@ -2,6 +2,7 @@
 #include "console.h"
 
 #include <cmath>
+#include <algorithm>
 #include <SDL/SDL.h>
 
 Presenter Presenter::instance_;
@@ -75,11 +76,14 @@ int Presenter::renderPage(int src, int dest, int page)
 
   SDL_BlitSurface(srcSurf, &srcRect, screen, &destRect);
 
+  usedPages.push_back(page);
+
   return srcRect.h;
 }
 
 void Presenter::render()
 {
+  usedPages.clear();
   SDL_FillRect(screen, NULL, 0);
   
   const int pageHeight = document.pageHeight(); // TODO: multiple heights per document
@@ -96,6 +100,21 @@ void Presenter::render()
   SDL_Flip(screen);
 }
 
+void Presenter::clearCache()
+{
+  std::list<int>::const_iterator it = usedPages.begin();
+  for ( int i=0; i < document.pageCount; ++i ) {
+    if ( i == *it ) {
+      ++it;
+    } else {
+      if ( document[i].isRendered() ) {
+	if ( console::verbose() ) console::out() << "Freeing page " << i << std::endl;
+	document[i].unrender();	
+      }
+    }
+  }
+}
+
 void Presenter::run()
 {
   Event& event = Event::instance();
@@ -103,9 +122,12 @@ void Presenter::run()
   while ( event.poll() ) {
     event.fillFrame();
 
-    // if ( event.diag(1000) ) {
-    //   console::out() << event.getFps() << std::endl;
-    // }    
+    if ( event.diag(1000) ) {
+      if ( console::verbose() ) {
+	console::out() << event.getFps() << " with " << document.renderedPages() << " rendered pages." << std::endl;
+	clearCache();
+      }
+    }    
   }
 }
 

@@ -25,7 +25,7 @@ void Presenter::init(int w, int h, const std::string& file)
 void Presenter::reopen()
 {
   document.open(filename);
-  document.render(width);
+  document.setWidth(width);
   render();
 }
 
@@ -46,13 +46,17 @@ void Presenter::resize(int w, int h)
       position *= ((double)width)/oldWidth;
       clamp();
     }
-    document.render(width);
+    document.setWidth(width);
   }
 }
 
 int Presenter::renderPage(int src, int dest, int page)
 {
   if ( page < 0 || page >= document.pageCount ) return document.pageHeight();
+  if ( !document[page].isRendered() ) {
+    document[page].render();
+  }
+
   SDL_Surface* srcSurf = document[page].getSurface();
   SDL_Rect srcRect;
   srcRect.x = 0;

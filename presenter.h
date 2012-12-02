@@ -37,6 +37,8 @@ public:
 
 private:
 
+  int renderPage(int src, int dest, int page);
+
   static Presenter instance_;
 
   double position;

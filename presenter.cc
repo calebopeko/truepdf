@@ -50,32 +50,41 @@ void Presenter::resize(int w, int h)
   }
 }
 
+int Presenter::renderPage(int src, int dest, int page)
+{
+  if ( page < 0 || page >= document.pageCount ) return document.pageHeight();
+  SDL_Surface* srcSurf = document[page].getSurface();
+  SDL_Rect srcRect;
+  srcRect.x = 0;
+  srcRect.y = src;
+  srcRect.w = srcSurf->w;
+  srcRect.h = std::min(srcSurf->h - src, height);
+  SDL_Rect destRect;
+  destRect.x = 0;
+  destRect.y = dest;
+  destRect.w = srcRect.w;
+  destRect.h = srcRect.h;
+
+  SDL_BlitSurface(srcSurf, &srcRect, screen, &destRect);
+
+  return srcRect.h;
+}
+
 void Presenter::render()
 {
   SDL_FillRect(screen, NULL, 0);
-
-  const int pageHeight = document.pageHeight(); // TODO: multiple heights per document!
-  const int currentPage = position/pageHeight;
-  if ( currentPage < document.pageCount ) {
-    const int offset = position-currentPage*pageHeight;
-    SDL_Surface* src = document[currentPage].getSurface();
-    SDL_Rect s;
-    s.x = 0; s.y = offset; s.w = src->w; s.h = std::min(src->h - offset, height);
-    SDL_BlitSurface(src, &s, screen, NULL);
-
-    int renderPos = std::min(src->h - offset, height) + transitionSpace;
-    int pageOffset = 1;
-    while ( renderPos < height && currentPage + pageOffset < document.pageCount ) {
-      SDL_Surface* next = document[currentPage+pageOffset].getSurface();
-      SDL_Rect nextRec, nextDest;
-      nextRec.x = 0; nextRec.y = 0; nextRec.w = next->w; nextRec.h = std::min(height - renderPos, next->h);
-      nextDest.x = 0; nextDest.y = renderPos;
-      SDL_BlitSurface(next, &nextRec, screen, &nextDest);
-      renderPos += next->h + transitionSpace;
-      pageOffset++;
-    }
-  }
-
+  
+  const int pageHeight = document.pageHeight(); // TODO: multiple heights per document
+  int currentPage = position/pageHeight;
+  int srcPos = position-currentPage*pageHeight;
+  int destPos = 0;
+  do {
+    const int renderHeight = renderPage(srcPos, destPos, currentPage);
+    srcPos = 0;
+    destPos += renderHeight + transitionSpace;
+    currentPage++;
+  } while ( destPos < height && currentPage < document.pageCount );
+    
   SDL_Flip(screen);
 }
 

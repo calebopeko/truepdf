@@ -24,6 +24,8 @@ public:
 
   void render();
 
+  bool unrender();
+
   void setWidth(int w);
 
   SDL_Surface* getSurface() { return surface; }
@@ -57,6 +59,8 @@ public:
   void setWidth(int w);
 
   void render();
+
+  int renderedPages();
 
   int pageHeight();
 

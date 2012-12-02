@@ -60,6 +60,8 @@ public:
 
   void render();
 
+  int renderedPages();
+
   int pageHeight();
 
   Page& operator[](int i) { assert(0<=i && i<pageCount); return pages[i]; }

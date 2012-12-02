@@ -159,3 +159,12 @@ Document::~Document()
 
   SDL_Quit();
 }
+
+int Document::renderedPages()
+{
+  int ret = 0;
+  for ( int i=0; i<pageCount; ++i ) {
+    if ( pages[i].isRendered() ) ++ret;
+  }
+  return ret;
+}

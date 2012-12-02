@@ -21,10 +21,19 @@ void Page::prepare(PopplerPage* p)
   poppler_page_get_size(page, &width, &height);
 }
 
-void Page::render(int tW)
+void Page::setWidth(int tW)
 {
+  if ( tW != targetWidth ) {
+    if ( rendered && surface ) {
+      SDL_FreeSurface(surface);
+    }
+    rendered = false;
+  }
   targetWidth = tW;
+}
 
+void Page::render()
+{
   if ( rendered && surface ) {
     SDL_FreeSurface(surface);
   }
@@ -58,6 +67,8 @@ void Page::render(int tW)
   poppler_page_render(page, context);
   cairo_destroy(context);
   cairo_surface_destroy(cairo_surface);
+
+  if ( console::verbose() ) console::out() << "Rendered page " << surface->w << "x" << surface->h << std::endl;
 
   rendered = true;
 }
@@ -97,7 +108,8 @@ void Document::open(const std::string& filename)
     console::err() << "Document has 0 pages!" << std::endl;
     return;
   }
-  
+
+  pages.clear();
   pages.resize(pageCount);
   for ( int i=0; i<pageCount; ++i ) {
     PopplerPage* page = poppler_document_get_page(document, i);
@@ -109,12 +121,20 @@ void Document::open(const std::string& filename)
   }
 }
 
-void Document::render(int tW)
+void Document::setWidth(int tW)
 {
-  if ( console::verbose() ) console::out() << "Pre-rendering all pages..." << std::endl;
   targetWidth = tW;
   for ( int i=0; i<pageCount; ++i ) {
-    pages[i].render(targetWidth);
+    pages[i].setWidth(targetWidth);
+  }
+}
+
+void Document::render()
+{
+  if ( console::verbose() ) console::out() << "Pre-rendering all pages..." << std::endl;
+  for ( int i=0; i<pageCount; ++i ) {
+    pages[i].setWidth(targetWidth);
+    pages[i].render();
     if ( console::verbose() ) console::out() << i+1 << "/" << pageCount << std::endl;
   }
   if ( console::verbose() ) console::out() << "Done." << std::endl;

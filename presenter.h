@@ -5,6 +5,8 @@
 #include "pdf.h"
 #include "event.h"
 
+#include <list>
+
 class Presenter
 {
 public:
@@ -39,6 +41,8 @@ private:
 
   int renderPage(int src, int dest, int page);
 
+  void clearCache();
+
   static Presenter instance_;
 
   double position;
@@ -52,6 +56,8 @@ private:
   int transitionSpace;
 
   bool preRender;
+
+  std::list<int> usedPages;
 };
 
 #endif

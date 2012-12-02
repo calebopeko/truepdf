@@ -24,18 +24,27 @@ void Page::prepare(PopplerPage* p)
 void Page::setWidth(int tW)
 {
   if ( tW != targetWidth ) {
-    if ( rendered && surface ) {
-      SDL_FreeSurface(surface);
-    }
-    rendered = false;
+    unrender();
   }
   targetWidth = tW;
+}
+
+bool Page::unrender()
+{
+  bool ret = false;
+  if ( rendered && surface ) {
+    SDL_FreeSurface(surface);
+    ret = true;
+  }
+  rendered = false;
+
+  return ret;
 }
 
 void Page::render()
 {
   if ( rendered && surface ) {
-    SDL_FreeSurface(surface);
+    unrender();
   }
 
   Uint32 rmask, gmask, bmask, amask;
@@ -78,10 +87,7 @@ Page::~Page()
   // if ( page ) {
   //   g_object_unref(page);
   // }
-
-  if ( surface ) {
-    SDL_FreeSurface(surface);
-  }
+  unrender();
 }
 
 Document::Document(const std::string& filename)

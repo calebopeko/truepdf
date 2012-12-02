@@ -20,7 +20,11 @@ public:
 
   void prepare(PopplerPage* page);
 
-  void render(int targetWidth);
+  bool isRendered() { return rendered; }
+
+  void render();
+
+  void setWidth(int w);
 
   SDL_Surface* getSurface() { return surface; }
   const SDL_Surface* getSurface() const { return surface; }
@@ -50,7 +54,9 @@ public:
 
   void open(const std::string& filename);
 
-  void render(int targetWidth);
+  void setWidth(int w);
+
+  void render();
 
   int pageHeight();
 

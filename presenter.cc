@@ -125,7 +125,7 @@ void Presenter::run()
     if ( event.diag(1000) ) {
       if ( console::verbose() ) {
 	console::out() << event.getFps() << " with " << document.renderedPages() << " rendered pages." << std::endl;
-	clearCache();
+	if ( !preRender ) clearCache();
       }
     }    
   }

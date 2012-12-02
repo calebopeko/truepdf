@@ -7,15 +7,16 @@
 Presenter Presenter::instance_;
 
 Presenter::Presenter(int w, int h, const std::string& filename)
-    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2)
+  : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2), preRender(false)
 {
   init(w, h, filename);
 }
 
-void Presenter::init(int w, int h, const std::string& file)
+void Presenter::init(int w, int h, const std::string& file, bool pre)
 {
   SDL_Init(SDL_INIT_VIDEO);
 
+  preRender = pre;
   filename = file;
 
   document.open(filename);
@@ -47,6 +48,9 @@ void Presenter::resize(int w, int h)
       clamp();
     }
     document.setWidth(width);
+    if ( preRender ) {
+      document.render();
+    }
   }
 }
 

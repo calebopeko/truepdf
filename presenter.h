@@ -10,13 +10,13 @@ class Presenter
 public:
 
   Presenter()
-    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2) {}
+    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2), preRender(false) {}
 
   Presenter(int width, int height, const std::string& filename);
 
   static Presenter& instance() { return instance_; }
 
-  void init(int width, int height, const std::string& filename);
+  void init(int width, int height, const std::string& filename, bool pre = false);
 
   void run();
 
@@ -50,6 +50,8 @@ private:
   SDL_Surface* screen;
 
   int transitionSpace;
+
+  bool preRender;
 };
 
 #endif

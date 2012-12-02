@@ -95,6 +95,6 @@ void Presenter::run()
 void Presenter::clamp()
 { 
   const int maxPos = (document.pageCount*document.pageHeight()) - height;
-  if ( position < 0 ) position = 0;
   if ( position > maxPos ) position = maxPos;
+  if ( position < 0 ) position = 0;
 }

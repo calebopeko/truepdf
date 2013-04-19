@@ -7,15 +7,15 @@
 
 Presenter Presenter::instance_;
 
-Presenter::Presenter(int w, int h, const std::string& filename)
-  : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2), preRender(false)
-{
-  init(w, h, filename);
-}
-
-void Presenter::init(int w, int h, const std::string& file, bool pre)
+void Presenter::init(int w, int h, const std::string& file, bool pre, const std::string& c)
 {
   SDL_Init(SDL_INIT_VIDEO);
+
+  if ( c == "dark" ) {
+    colored = COLOR_SOLARIZED_DARK;
+  } else if ( c == "light" ) {
+    colored = COLOR_SOLARIZED_LIGHT;
+  }
 
   preRender = pre;
   filename = file;
@@ -50,7 +50,7 @@ void Presenter::resize(int w, int h)
     }
     document.setWidth(width);
     if ( preRender ) {
-      document.render();
+      document.render(colored);
     }
   }
 }
@@ -59,7 +59,7 @@ int Presenter::renderPage(int src, int dest, int page)
 {
   if ( page < 0 || page >= document.pageCount ) return document.pageHeight();
   if ( !document[page].isRendered() ) {
-    document[page].render();
+    document[page].render(colored);
   }
 
   SDL_Surface* srcSurf = document[page].getSurface();

@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   event.init(30);
 
   Presenter& presenter = Presenter::instance();
-  presenter.init(options["width"], options["height"], options["file"], options["preRender"]);
+  presenter.init(options["width"], options["height"], options["file"], options["preRender"], options["color"]);
   presenter.run();
 
   return 0;

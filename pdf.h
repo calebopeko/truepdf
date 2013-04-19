@@ -9,6 +9,12 @@
 #include <string>
 #include <assert.h>
 
+enum ColorType {
+  COLOR_DEFAULT,
+  COLOR_SOLARIZED_DARK,
+  COLOR_SOLARIZED_LIGHT
+};
+
 class Page
 {
 public:
@@ -22,7 +28,7 @@ public:
 
   bool isRendered() { return rendered; }
 
-  void render();
+  void render(ColorType color = COLOR_DEFAULT);
 
   bool unrender();
 
@@ -58,7 +64,7 @@ public:
 
   void setWidth(int w);
 
-  void render();
+  void render(ColorType color = COLOR_DEFAULT);
 
   int renderedPages();
 

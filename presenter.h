@@ -12,13 +12,11 @@ class Presenter
 public:
 
   Presenter()
-    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2), preRender(false) {}
-
-  Presenter(int width, int height, const std::string& filename);
+    : width(0), height(0), position(0), document(), screen(NULL), transitionSpace(2), preRender(false), colored(COLOR_DEFAULT) {}
 
   static Presenter& instance() { return instance_; }
 
-  void init(int width, int height, const std::string& filename, bool pre = false);
+  void init(int width, int height, const std::string& filename, bool pre, const std::string& c);
 
   void run();
 
@@ -30,6 +28,8 @@ public:
   
   double getPosition() { return position; }
   void setPosition(double p) { position = p; clamp(); }
+
+  void setColor(ColorType c) { colored = c; }
 
   Document& getDocument() { return document; }
 
@@ -56,6 +56,8 @@ private:
   int transitionSpace;
 
   bool preRender;
+  
+  ColorType colored;
 
   std::list<int> usedPages;
 };

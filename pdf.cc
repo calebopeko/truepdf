@@ -41,7 +41,7 @@ bool Page::unrender()
   return ret;
 }
 
-void Page::render()
+void Page::render(ColorType color)
 {
   if ( rendered && surface ) {
     unrender();
@@ -78,6 +78,41 @@ void Page::render()
   cairo_surface_destroy(cairo_surface);
 
   if ( console::verbose() ) console::out() << "Rendered page " << surface->w << "x" << surface->h << std::endl;
+
+  // modify surface TEST
+  // dark
+  // (0,0,0) --> (131,148,150)
+  // (255,255,255) --> (0,43,54)
+  if ( color == COLOR_SOLARIZED_DARK ) {
+    for ( int y=0; y < surface->h; ++y ) {
+      for ( int x=0; x < surface->w; ++x ) {
+	Uint32* p = (Uint32*) surface->pixels + y*surface->w + x;
+	Uint32 r = (*p & rmask) >> 2*8;
+	Uint32 g = (*p & gmask) >> 1*8;
+	Uint32 b = (*p & bmask) >> 0*8;
+	r = (1.-r/255.)*131.;
+	g = (1.-g/255.)*(148-43) + 43;
+	b = (1.-b/255.)*(150-54) + 54;
+	*p = amask + (r<<2*8) + (g<<1*8) + b;
+      }
+    }
+  } else if ( color == COLOR_SOLARIZED_LIGHT ) {
+    // light
+    // (0,0,0) --> (101,123,131)
+    // (255,255,255) --> (253,246,227)
+    for ( int y=0; y < surface->h; ++y ) {
+      for ( int x=0; x < surface->w; ++x ) {
+	Uint32* p = (Uint32*) surface->pixels + y*surface->w + x;
+	Uint32 r = (*p & rmask) >> 2*8;
+	Uint32 g = (*p & gmask) >> 1*8;
+	Uint32 b = (*p & bmask) >> 0*8;
+	r = r/255.*(253-101) + 101.;
+	g = g/255.*(246-123) + 123.;
+	b = b/255.*(227-131) + 131.;
+	*p = amask + (r<<2*8) + (g<<1*8) + b;
+      }
+    }
+  }
 
   rendered = true;
 }
@@ -135,12 +170,12 @@ void Document::setWidth(int tW)
   }
 }
 
-void Document::render()
+void Document::render(ColorType color)
 {
   if ( console::verbose() ) console::out() << "Pre-rendering all pages..." << std::endl;
   for ( int i=0; i<pageCount; ++i ) {
     pages[i].setWidth(targetWidth);
-    pages[i].render();
+    pages[i].render(color);
     if ( console::verbose() ) console::out() << i+1 << "/" << pageCount << std::endl;
   }
   if ( console::verbose() ) console::out() << "Done." << std::endl;

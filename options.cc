@@ -12,6 +12,7 @@ void Options::init()
   addParam("file", "", "Set the document to load.", 'f');
   addParam("verbose", "0", "Set verbosity.", 'v');
   addParam("preRender", "0", "Prerender all pages.", 'p');
+  addParam("color", "default", "Apply color scheme. Values are 'default', 'dark', 'light'.", 'c');
 }
 
 void Options::addParam(const std::string& name, const std::string& initial, const std::string& description, char abbrev)
